@@ -1,3 +1,4 @@
+import { processFile, ProcessText, processURL } from "@/lib/loaders";
 import { addDocuments, initializeVectorStore } from "@/lib/qdrant";
 import { NextResponse } from "next/server";
 
@@ -54,7 +55,7 @@ export async function POST(request) {
       }
 
       if (type === "text") {
-        documents = await processText(content);
+        documents = await ProcessText(content);
       } else if (type === "url") {
         documents = await processURL(content);
       } else {
