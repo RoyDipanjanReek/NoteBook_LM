@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧠 NotebookLM Clone — RAG-powered AI Notes Assistant
 
-## Getting Started
+A **Retrieval-Augmented Generation (RAG)** powered note-taking and knowledge assistant inspired by **Google’s NotebookLM**.  
+Built with **Next.js**, **LangChain**, **OpenAI**, and **Clerk** — this app allows users to upload documents, query their own data, and get context-aware AI answers.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features
+
+- 📄 **Document Uploads** — Upload PDFs, text, or CSV files for context-based learning
+- 🧩 **RAG Pipeline** — Uses LangChain for document chunking, embeddings, and retrieval
+- 🤖 **Chat with Your Notes** — Contextual chat with OpenAI’s GPT models
+- 🔐 **Authentication with Clerk** — Secure user management and session handling
+- ⚡ **Next.js App Router** — Modern, fast, and scalable React-based framework
+- 🧠 **Vector Store Integration** — Store embeddings in Qdrant / Pinecone / Supabase
+- 💾 **Persistent Conversations** — Save chat history and revisit your notes anytime
+- 🎨 **Modern UI** — Built with Tailwind CSS & Shadcn UI for a clean notebook feel
+
+---
+
+## 🏗️ Tech Stack
+
+| Category     | Technology                                                                                                                                    |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Frontend     | [Next.js 14](https://nextjs.org/), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [Shadcn UI](https://ui.shadcn.com/) |
+| Backend      | [LangChain](https://www.langchain.com/), [Next.js API Routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes)     |
+| AI / LLM     | [OpenAI API](https://platform.openai.com/docs)                                                                                                |
+| Auth         | [Clerk](https://clerk.com/)                                                                                                                   |
+| Vector DB    | [QdrantDB](https://qdrant.tech/)                                                                                                              |
+| File Parsing | [PDF-Parse](https://www.npmjs.com/package/pdf-parse), [PapaParse](https://www.papaparse.com/)                                                 |
+
+---
+
+## 🧩 Project Structure
+
+```
+notebooklm-clone/
+│
+├── app/ # Next.js app router
+│ ├── layout.tsx
+│ ├── page.tsx
+│ └── api/
+│ ├── chat/route.ts # Chat endpoint for AI responses
+│ └── upload/route.ts # File upload & embedding processing
+│
+├── components/ # Reusable UI components
+├── lib/
+│ ├── langchain/ # LangChain pipelines and retrievers
+│ ├── embeddings.ts # OpenAI embeddings setup
+│ └── qdrant.ts # Vector DB integration
+│
+├── public/ # Static assets
+├── styles/ # Tailwind & global styles
+├── .env.local # Environment variables
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## ⚙️ Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the project root:
 
-## Learn More
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+CLERK_SECRET_KEY=your_clerk_secret
 
-To learn more about Next.js, take a look at the following resources:
+OPENAI_API_KEY=your_openai_api_key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+QDRANT_URL=https://your-qdrant-instance
+QDRANT_API_KEY=your_qdrant_api_key
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Installation & Setup
+# 1️⃣ Clone the repository
+git clone https://github.com/yourusername/notebooklm-clone.git
+cd notebooklm-clone
 
-## Deploy on Vercel
+# 2️⃣ Install dependencies
+npm install
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# 3️⃣ Setup environment variables
+cp .env.example .env.local
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# 4️⃣ Run the development server
+npm run dev
+
+Visit your app at 👉 http://localhost:3000
+```
+
+## 🧠 RAG Pipeline Overview
+
+```
+1️⃣ Document Upload: User uploads a file (PDF, text, etc.)
+
+2️⃣ Text Extraction: The file content is parsed and split into chunks
+
+3️⃣ Embeddings Creation: Each chunk is converted into vector embeddings using OpenAI
+
+4️⃣ Vector Storage: Embeddings are stored in a vector database (e.g., Qdrant)
+
+6️⃣ Query: When user asks a question, relevant chunks are retrieved using similarity search
+
+7️⃣ LLM Response: OpenAI generates a context-aware answer based on retrieved context
+```
+
+# 🧪 Example Query Flow
+
+```mermaid
+flowchart TD
+    A[User Query] --> B[LangChain Retriever]
+    B --> C[Vector Store Similarity Search]
+    C --> D[Relevant Context]
+    D --> E[OpenAI GPT Model]
+    E --> F[Final Answer]
+```
+
+## 🪪 License
+
+This project is licensed under the MIT License.
+
+## ⭐ Acknowledgements
+
+LangChain
+
+Next.js
+
+Clerk
+
+OpenAI
+
+Qdrant
+
+Google NotebookLM
+— inspiration for this project
+
+## 💡 Future Enhancements
+
+Add multi-document retrieval
+
+Support for image/document summarization
+
+Semantic search with hybrid retrieval
+
+Collaborative workspaces
+
+## 🧑‍🎓 Author
+
+## Dipanjan Roy
+
+🚀 Passionate about AI, backend development, and building meaningful projects.
+
+### [LinkedIn](https://www.linkedin.com/in/roydipanjan2003/)
+
+### [GitHub](https://github.com/RoyDipanjanReek)
+
+### [Portfolio](https://nextjs.org/)
+
+---
