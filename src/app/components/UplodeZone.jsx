@@ -21,7 +21,7 @@ export default function UplodeZone() {
     e.preventDefault();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
-    handleFileUplload(files);
+    handleFileUpload(files);
   };
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
@@ -29,16 +29,15 @@ export default function UplodeZone() {
   };
   const handleFileUpload = async (files) => {
     setIsUploading(true);
+
     for (const file of files) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", file);
+      formData.append("type", "file");
 
       try {
-        {
+        
           /**fetch api */
-        }
-
         const response = await fetch("/api/ingest", {
           method: "POST",
           body: formData,
@@ -53,7 +52,7 @@ export default function UplodeZone() {
               name: file.name,
               type: file.type,
               size: file.size,
-              chunks: file.chunks,
+              chunks: result.chunks,
             },
           ]);
         }

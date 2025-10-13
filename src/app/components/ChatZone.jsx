@@ -37,10 +37,10 @@ export default function Chat() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json ",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: input,
+          message: input,
         }),
       });
 
@@ -63,7 +63,7 @@ export default function Chat() {
         const lines = chunk.split("\n");
 
         for (const line of lines) {
-          if (line.startsWith("data ")) {
+          if (line.startsWith("data: ")) {
             const data = line.slice(6);
             if (data === "[DONE]") {
               setIsLoading(false);

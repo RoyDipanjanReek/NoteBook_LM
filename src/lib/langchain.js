@@ -1,12 +1,11 @@
 import { ChatOpenAI } from "@langchain/openai";
-
 import { PromptTemplate } from "@langchain/core/prompts";
 import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
 import { searchSimilarDocuments } from "./qdrant";
-import { StringOutputParser } from "@langchain/core/dist/output_parsers";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 
 //  Supress token counting warnings
 const originalConsoleWarn = console.warn;
@@ -111,24 +110,24 @@ export function createRAGChain() {
 
 // Function to get the ans with streming
 export async function getStreamingAnswer(question) {
-    try {
-        const chain = createRAGChain()
-        const stream = await chain.stream({question})
-        return stream
-    } catch (error) {
-        console.error('Error to getting streaming ans');
-        throw error
-    }
+  try {
+    const chain = createRAGChain();
+    const stream = await chain.stream({ question });
+    return stream;
+  } catch (error) {
+    console.error("Error to getting streaming ans");
+    throw error;
+  }
 }
 
 // Function to get the non-streming ans
 export async function getAnswer(question) {
-    try {
-        const chain = createRAGChain()
-        const ans = await chain.invoke({question})
-        return ans
-    } catch (error) {
-          console.error('Error to getting ans');
-        throw error
-    }
+  try {
+    const chain = createRAGChain();
+    const ans = await chain.invoke({ question });
+    return ans;
+  } catch (error) {
+    console.error("Error to getting ans");
+    throw error;
+  }
 }

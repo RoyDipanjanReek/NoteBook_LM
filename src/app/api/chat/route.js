@@ -13,7 +13,7 @@ export async function POST(request) {
     }
 
     const encoder = new TextEncoder();
-    const strem = new ReadableStream({
+    const stream = new ReadableStream({
       async start(controller) {
         try {
           const answerStream = await getStreamingAnswer(message);
@@ -23,7 +23,7 @@ export async function POST(request) {
             controller.enqueue(encoder.encode(`data: ${data}\n\n`));
           }
 
-          controller.enqueue(encoder.enqueue(`data: [DONE]\n\n`));
+          controller.enqueue(encoder.encode(`data: [DONE]\n\n`));
           controller.close();
         } catch (error) {
           console.error("Error in streaming:", error);
@@ -37,9 +37,9 @@ export async function POST(request) {
       },
     });
 
-    return new Response(strem, {
+    return new Response(stream, {
       headers: {
-        "Content-Type": "text/plain; charset = utf-8",
+        "Content-Type": "text/event-stream; charset=utf-8",
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
       },
