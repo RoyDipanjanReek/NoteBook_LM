@@ -41,8 +41,8 @@ suppressTokens();
 
 //Initializing openAi
 const llm = new ChatOpenAI({
-  openAIApiKey: process.env.openAIApiKey,
-  model: "gpt-3.5-turbo",
+  openAIApiKey: process.env.GEMINI_API_KEY,
+  model: "gemini-2.0-flash",
   temperature: 0.1,
   streaming: true,
   // Disable token counting to prevent network error

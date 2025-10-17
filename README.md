@@ -1,7 +1,7 @@
 # 🧠 NotebookLM Clone — RAG-powered AI Notes Assistant
 
 A **Retrieval-Augmented Generation (RAG)** powered note-taking and knowledge assistant inspired by **Google’s NotebookLM**.  
-Built with **Next.js**, **LangChain**, **OpenAI**, and **Clerk** — this app allows users to upload documents, query their own data, and get context-aware AI answers.
+Built with **Next.js**, **LangChain**, **Docker**, **OpenAI**, and **Clerk** — this app allows users to upload documents, query their own data, and get context-aware AI answers.
 
 ---
 
@@ -12,7 +12,7 @@ Built with **Next.js**, **LangChain**, **OpenAI**, and **Clerk** — this app al
 - 🤖 **Chat with Your Notes** — Contextual chat with OpenAI’s GPT models
 - 🔐 **Authentication with Clerk** — Secure user management and session handling
 - ⚡ **Next.js App Router** — Modern, fast, and scalable React-based framework
-- 🧠 **Vector Store Integration** — Store embeddings in Qdrant / Pinecone / Supabase
+- 🧠 **Vector Store Integration** — Store embeddings in Qdrant 
 - 💾 **Persistent Conversations** — Save chat history and revisit your notes anytime
 - 🎨 **Modern UI** — Built with Tailwind CSS & Shadcn UI for a clean notebook feel
 
@@ -59,9 +59,9 @@ notebooklm-clone/
 
 ## ⚙️ Environment Variables
 
-Create a `.env.local` file in the project root:
+Create a `.sample.env` file in the project root:
 
-```bash
+``` bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
 CLERK_SECRET_KEY=your_clerk_secret
 
@@ -79,7 +79,7 @@ cd notebooklm-clone
 npm install
 
 # 3️⃣ Setup environment variables
-cp .env.example .env.local
+cp  .sample.env
 
 # 4️⃣ Run the development server
 npm run dev
@@ -96,7 +96,7 @@ Visit your app at 👉 http://localhost:3000
 
 3️⃣ Embeddings Creation: Each chunk is converted into vector embeddings using OpenAI
 
-4️⃣ Vector Storage: Embeddings are stored in a vector database (e.g., Qdrant)
+4️⃣ Vector Storage: Embeddings are stored in a vector database (Qdrant)
 
 6️⃣ Query: When user asks a question, relevant chunks are retrieved using similarity search
 
@@ -130,8 +130,10 @@ OpenAI
 
 Qdrant
 
+Docker
+
 Google NotebookLM
-— inspiration for this project
+— inspiration for this project.
 
 ## 💡 Future Enhancements
 

@@ -1,17 +1,23 @@
 import React from "react";
 import UplodeZone from "../components/UplodeZone";
 import Chat from "../components/ChatZone";
+import { SignOutButton, UserButton } from "@clerk/nextjs";
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-gray-600 ">
       {/** HEADER */}
-      <header className="bg-gray-500 px-4 py-4">
+      <header className="bg-gray-500 px-4 py-4 flex justify-between">
         <div className="flex items-center space-x-2 sm:space-x-4">
           <h1 className="text-xl sm:text-2xl font-bold text-white">CopyBook</h1>
-          <span className="px-2 py-1 bg-blue-800 text-xl font-medium rounded-full">
-            LLM
+          <span className="px-2 py-1 bg-blue-800 text-xl font-medium rounded">
+            LM
           </span>
+        </div>
+        <div className="flex gap-2">
+          <div>
+            <UserButton />
+          </div>
         </div>
       </header>
 

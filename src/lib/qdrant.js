@@ -2,8 +2,9 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 
 const embeddings = new OpenAIEmbeddings({
-  openAIApiKey: process.env.OPENAI_API_KEY,
-  model: "text-embedding-3-large",
+  apiKey: process.env.GEMINI_API_KEY,
+  model: "gemini-2.5-flash",
+  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 });
 
 let vectorStore = null;

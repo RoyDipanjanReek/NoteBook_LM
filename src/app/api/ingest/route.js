@@ -8,12 +8,12 @@ export async function POST(request) {
 		console.log('Starting ingest process...');
 
 		// Check environment variables
-		if (!process.env.OPENAI_API_KEY) {
-			console.error('Missing OPENAI_API_KEY in environment variables');
+		if (!process.env.GEMINI_API_KEY) {
+			console.error('Missing GEMINI_API_KEY in environment variables');
 			return NextResponse.json(
 				{
 					error:
-						'Missing OpenAI API key. Please set OPENAI_API_KEY in .env.local',
+						'Missing OpenAI API key. Please set GEMINI_API_KEY in .env.local',
 				},
 				{ status: 500 }
 			);

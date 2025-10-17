@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Typewriter from 'typewriter-effect';
 
 const HeroSection = () => {
   const [expanded, setExpanded] = useState(false);
@@ -11,15 +12,25 @@ const HeroSection = () => {
           <div className="grid items-center grid-cols-1 gap-y-12 lg:grid-cols-2 gap-x-16">
             <div>
               <h1 className="text-4xl font-normal text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-                Let's start Chatting with Your Resourses
+                Let's start <span className='text-amber-300 underline '>Chatting</span> with  
+                  <Typewriter
+                  className='text-blue-500 underline italic'
+                  options={{
+                    strings: [
+                      'PDF',
+                      'Sample Text',
+                      'Website URL'
+                    ],
+                    autoStart: true,
+                    loop: true,
+                  }}
+                  />
               </h1>
               <p className="mt-4 text-lg font-normal text-gray-400 sm:mt-8">
-                Amet minim mollit non deserunt ullamco est sit aliqua dolor do
-                amet sint. Velit officia consequat duis enim velit mollit.
-                Exercitation veniam consequat.
+                CopyBookLM a Mini Retrieval-Augmented Generation (RAG) powered note-taking and knowledge assistant inspired by Google’s NotebookLM.
               </p>
 
-              <form
+              {/* <form
                 action="#"
                 method="POST"
                 className="relative mt-8 rounded-full sm:mt-12"
@@ -58,7 +69,7 @@ const HeroSection = () => {
                     Find A Developer
                   </button>
                 </div>
-              </form>
+              </form> */}
 
               <div className="mt-8 sm:mt-12">
                 <p className="text-lg font-normal text-white">
