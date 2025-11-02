@@ -13,11 +13,11 @@ const originalConsoleError = console.error;
 
 function suppressTokens() {
   console.warn = (...args) => {
-    const massage = args.join("");
+    const message = args.join(' ');
 
     if (
-      massage.includes("Failed to calculate number of token") ||
-      massage.includes("Falling back to approximate count")
+      message.includes("Failed to calculate number of token") ||
+      message.includes("Falling back to approximate count")
     ) {
       return;
     }
@@ -25,11 +25,11 @@ function suppressTokens() {
   };
 
   console.error = (args) => {
-    const massage = args.join("");
+    const message = args.join(' ');
     if (
-      massage.includes("Failed to calculate number of token") ||
-      massage.includes("Falling back to approximate count") ||
-      massage.includes("ECONNRESET")
+      message.includes("Failed to calculate number of token") ||
+      message.includes("Falling back to approximate count") ||
+      message.includes("ECONNRESET")
     ) {
       return;
     }
@@ -41,8 +41,8 @@ suppressTokens();
 
 //Initializing openAi
 const llm = new ChatOpenAI({
-  openAIApiKey: process.env.GEMINI_API_KEY,
-  model: "gemini-2.0-flash",
+  openAIApiKey: process.env.OPENAI_API_KEY,
+  model: "gpt-4o-mini",
   temperature: 0.1,
   streaming: true,
   // Disable token counting to prevent network error

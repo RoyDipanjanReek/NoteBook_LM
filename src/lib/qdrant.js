@@ -1,10 +1,10 @@
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 
+// OpenAi api key and model name is here
 const embeddings = new OpenAIEmbeddings({
-  apiKey: process.env.GEMINI_API_KEY,
-  model: "gemini-2.5-flash",
-  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+  apiKey: process.env.OPENAI_API_KEY,
+  model: "text-embedding-3-large",
 });
 
 let vectorStore = null;
