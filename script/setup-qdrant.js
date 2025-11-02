@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 const embedding = new OpenAIEmbeddings({
-  openAIApiKey: process.env.openAIApiKey,
+  openAIApiKey: process.env.OPENAI_API_KEY,
   model: "text-embedding-3-large",
 });
 
