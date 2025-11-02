@@ -24,7 +24,7 @@ function suppressTokens() {
     originalConsoleWarn(...args);
   };
 
-  console.error = (args) => {
+  console.error = (...args) => {
     const message = args.join(' ');
     if (
       message.includes("Failed to calculate number of token") ||
