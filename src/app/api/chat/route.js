@@ -1,8 +1,46 @@
 import { getStreamingAnswer } from "@/lib/langchain";
 import { NextResponse } from "next/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import {
+  getUserDailyUsage,
+  incrementUserDailyUsage,
+  DAILY_QUESTION_LIMIT,
+} from "@/lib/usage";
+import { isAdminIdentity } from "@/lib/auth";
 
 export async function POST(request) {
   try {
+    const { userId } = auth();
+    const clerkUser = await currentUser();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
+    const isAdmin = isAdminIdentity({
+      userId,
+      email: clerkUser?.primaryEmailAddress?.emailAddress,
+    });
+
+    if (!isAdmin) {
+      const usage = await getUserDailyUsage(userId);
+      if (usage.count >= DAILY_QUESTION_LIMIT) {
+        return NextResponse.json(
+          {
+            error: "Daily question limit reached",
+            limit: DAILY_QUESTION_LIMIT,
+            remaining: 0,
+          },
+          { status: 403 }
+        );
+      }
+
+      await incrementUserDailyUsage(userId);
+    }
+
     const { message } = await request.json();
 
     if (!message) {

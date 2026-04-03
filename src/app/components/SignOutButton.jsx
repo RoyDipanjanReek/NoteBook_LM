@@ -1,13 +1,18 @@
-'use client'
+"use client";
 
-import { useClerk } from '@clerk/nextjs'
+import { useClerk } from "@clerk/nextjs";
+import Button from "@/components/ui/Button";
 
-export const SignOutButton = () => {
-  const { signOut } = useClerk()
+export const SignOutButton = ({ variant = "ghost", size = "sm" }) => {
+  const { signOut } = useClerk();
 
   return (
-    // Clicking this button signs out a user
-    // and redirects them to the home page "/".
-    <button onClick={() => signOut({ redirectUrl: '/' })}>Sign out</button>
-  )
-}
+    <Button
+      variant={variant}
+      size={size}
+      onClick={() => signOut({ redirectUrl: "/" })}
+    >
+      Sign out
+    </Button>
+  );
+};

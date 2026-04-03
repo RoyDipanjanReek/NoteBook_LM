@@ -1,56 +1,91 @@
 import React from "react";
+import Link from "next/link";
+import { currentUser } from "@clerk/nextjs/server";
+import { isAdminIdentity } from "@/lib/auth";
 import UplodeZone from "../components/UplodeZone";
 import Chat from "../components/ChatZone";
-import { SignOutButton, UserButton } from "@clerk/nextjs";
+import UsageBanner from "../components/UsageBanner";
+import { UserButton } from "@clerk/nextjs";
+import { syncCurrentUser } from "@/lib/sync-current-user";
+import {
+  Button,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
 
-const Home = () => {
+const Home = async () => {
+  const clerkUser = await currentUser();
+  await syncCurrentUser(clerkUser);
+  const isAdmin = isAdminIdentity({
+    userId: clerkUser?.id,
+    email: clerkUser?.primaryEmailAddress?.emailAddress,
+  });
+
   return (
-    <div className="min-h-screen bg-gray-600 ">
+    <div className="min-h-screen bg-background text-foreground">
       {/** HEADER */}
-      <header className="bg-gray-500 px-4 py-4 flex justify-between">
+      <header className="flex justify-between border-b border-border bg-surface/90 px-4 py-4 backdrop-blur">
         <div className="flex items-center space-x-2 sm:space-x-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-white">CopyBook</h1>
-          <span className="px-2 py-1 bg-blue-800 text-xl font-medium rounded">
+          <h1 className="font-display text-2xl text-foreground sm:text-3xl">
+            CopyBook
+          </h1>
+          <span className="rounded-pill bg-primary px-3 py-1 text-sm font-semibold text-primary-contrast">
             LM
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center">
           <div>
             <UserButton />
           </div>
+          {isAdmin ? (
+            <Button
+              as={Link}
+              href="/admin/dashboard"
+              variant="secondary"
+              size="sm"
+            >
+              Go to Dashboard
+            </Button>
+          ) : null}
         </div>
       </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
+        <UsageBanner />
+      </div>
 
       {/**MAIN CONTENT */}
       <div className="max-w-7xl mx-auto px-4 py-4 sm:py-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4">
           {/** LEFT SIDE -> UPLODE SECTION START HERE*/}
-          <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 overflow-hidden mb-4 lg:mb-0">
-            <div className="p-4 sm:p-6 border-b border-gray-700">
-              <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <Card padding="none" className="mb-4 overflow-hidden lg:mb-0">
+            <CardHeader className="border-b border-border p-4 sm:p-6">
+              <CardTitle className="text-xl sm:text-2xl">
                 Upload Sources
-              </h2>
-              <p className="text-gray-400 text-sm">
+              </CardTitle>
+              <CardDescription>
                 Add documents, paste text, or provide URLs to get started
-              </p>
-            </div>
+              </CardDescription>
+            </CardHeader>
             <div className="p-4 sm:p-6">
               <UplodeZone />
             </div>
-          </div>
+          </Card>
 
           {/** RIGHT SIDE -> CHAT SECTION */}
-          <div className="bg-gray-800 rounded-xl shadow-sm border border-gray-700 overflow-hidden mb-4 lg:mb-0">
-            <div className="p-4 sm:p-6 border-b border-gray-700">
-              <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <Card padding="none" className="mb-4 overflow-hidden lg:mb-0">
+            <CardHeader className="border-b border-border p-4 sm:p-6">
+              <CardTitle className="text-xl sm:text-2xl">
                 Chat with your Sources
-              </h2>
-              <p className="text-gray-400 text-sm">
+              </CardTitle>
+              <CardDescription>
                 Ask questions about your uploaded content
-              </p>
-            </div>
+              </CardDescription>
+            </CardHeader>
             <Chat />
-          </div>
+          </Card>
         </div>
       </div>
     </div>

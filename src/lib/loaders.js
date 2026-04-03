@@ -149,18 +149,52 @@ export async function processText(text) {
 
 export async function processUrl(url) {
   try {
-    const response = await fetch(url);
-    const html = await response.text();
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error(`Failed to fetch URL: ${response.status} ${response.statusText}`);
+    }
+
+    const html = await response.text();
     const dom = new JSDOM(html);
     const reader = new Readability(dom.window.document);
     const article = reader.parse();
 
-    if (!article) {
+    let content = article?.textContent?.trim();
+    let title = article?.title || url;
+
+    if (!content) {
+      const document = dom.window.document;
+      document
+        .querySelectorAll(
+          "script, style, noscript, iframe, header, footer, nav, aside"
+        )
+        .forEach((node) => node.remove());
+      content = document.body?.textContent?.trim() || "";
+    }
+
+    if (!content) {
+      const htmlText = html
+        .replace(/<script[\s\S]*?<\/script>/gi, " ")
+        .replace(/<style[\s\S]*?<\/style>/gi, " ")
+        .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      content = htmlText;
+    }
+
+    if (!content || !content.trim()) {
       throw new Error("Could not extract content from URL");
     }
 
-    const chunks = await textSplitter.splitText(article.textContent);
+    const chunks = await textSplitter.splitText(content.trim());
     return chunks.map(
       (chunk, index) =>
         new Document({
@@ -168,7 +202,7 @@ export async function processUrl(url) {
           metadata: {
             source: url,
             type: "url",
-            title: article.title,
+            title,
             chunk: index,
             totalChunks: chunks.length,
           },

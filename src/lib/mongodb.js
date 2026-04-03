@@ -13,8 +13,10 @@ const embeddings = new OpenAIEmbeddings({
 });
 
 let mongoClient = null;
+let mongoDb = null;
 let mongoCollection = null;
 let vectorIndexEnsured = false;
+let vectorSearchSupported = true;
 
 async function connectMongo() {
   if (mongoCollection) return mongoCollection;
@@ -29,6 +31,7 @@ async function connectMongo() {
   }
 
   const db = mongoClient.db(mongoDbName);
+  mongoDb = db;
   mongoCollection = db.collection(mongoCollectionName);
   return mongoCollection;
 }
@@ -37,18 +40,44 @@ async function ensureVectorIndex(dimension) {
   const collection = await connectMongo();
   if (vectorIndexEnsured) return collection;
 
-  const indexes = await collection.indexes();
-  const alreadyExists = indexes.some((index) => index.name === vectorIndexName);
+  const db = collection.db;
+  const collectionExists = await db
+    .listCollections({ name: mongoCollectionName }, { nameOnly: true })
+    .hasNext();
 
-  if (!alreadyExists) {
-    await collection.createIndex(
-      { [vectorField]: "vector" },
-      {
-        name: vectorIndexName,
-        dimensions: dimension,
-        similarity: "cosine",
-      }
-    );
+  if (!collectionExists) {
+    await db.createCollection(mongoCollectionName);
+  }
+
+  try {
+    const indexes = await collection.indexes();
+    const alreadyExists = indexes.some((index) => index.name === vectorIndexName);
+
+    if (!alreadyExists) {
+      await collection.createIndex(
+        { [vectorField]: "vector" },
+        {
+          name: vectorIndexName,
+          dimensions: dimension,
+          similarity: "cosine",
+        }
+      );
+    }
+  } catch (error) {
+    const unsupportedVectorIndex =
+      error.codeName === "CannotCreateIndex" ||
+      error.code === 67 ||
+      (error.message && error.message.includes("Unknown index plugin 'vector'"));
+
+    if (unsupportedVectorIndex) {
+      console.warn(
+        "MongoDB vector index not supported in this deployment; falling back to in-memory similarity search.",
+        error.message || error
+      );
+      vectorSearchSupported = false;
+    } else {
+      throw error;
+    }
   }
 
   vectorIndexEnsured = true;
@@ -60,6 +89,14 @@ function normalizeDocument(doc) {
     pageContent: typeof doc.pageContent === "string" ? doc.pageContent : "",
     metadata: doc.metadata || {},
   };
+}
+
+export async function getDb() {
+  if (!mongoDb) {
+    await connectMongo();
+  }
+
+  return mongoDb;
 }
 
 export async function getVectorStore() {
@@ -107,6 +144,30 @@ export async function addDocuments(documents) {
   }
 }
 
+function cosineSimilarity(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
+    return 0;
+  }
+
+  let dotProduct = 0;
+  let magnitudeA = 0;
+  let magnitudeB = 0;
+
+  for (let i = 0; i < a.length; i += 1) {
+    const x = a[i];
+    const y = b[i];
+    dotProduct += x * y;
+    magnitudeA += x * x;
+    magnitudeB += y * y;
+  }
+
+  if (magnitudeA === 0 || magnitudeB === 0) {
+    return 0;
+  }
+
+  return dotProduct / (Math.sqrt(magnitudeA) * Math.sqrt(magnitudeB));
+}
+
 export async function searchSimilarDocuments(query, k = 5) {
   try {
     if (!query || typeof query !== "string") {
@@ -116,21 +177,39 @@ export async function searchSimilarDocuments(query, k = 5) {
     const queryEmbedding = await embeddings.embedQuery(query);
     const collection = await ensureVectorIndex(queryEmbedding.length);
 
-    const results = await collection
-      .find({
-        $vectorSearch: {
-          query: queryEmbedding,
-          path: vectorField,
-          k,
-          similarity: "cosine",
-        },
-      })
-      .toArray();
+    if (vectorSearchSupported) {
+      const results = await collection
+        .find({
+          $vectorSearch: {
+            query: queryEmbedding,
+            path: vectorField,
+            k,
+            similarity: "cosine",
+          },
+        })
+        .toArray();
 
-    return results.map((doc) => ({
-      pageContent: doc.pageContent,
-      metadata: doc.metadata,
-    }));
+      return results.map((doc) => ({
+        pageContent: doc.pageContent,
+        metadata: doc.metadata,
+      }));
+    }
+
+    const allDocuments = await collection.find().toArray();
+    const scoredDocuments = allDocuments
+      .map((doc) => ({
+        doc,
+        score: cosineSimilarity(queryEmbedding, doc[vectorField]),
+      }))
+      .filter((item) => typeof item.score === "number")
+      .sort((a, b) => b.score - a.score)
+      .slice(0, k)
+      .map((item) => ({
+        pageContent: item.doc.pageContent,
+        metadata: item.doc.metadata,
+      }));
+
+    return scoredDocuments;
   } catch (error) {
     console.error("Error searching documents in vector store:", error);
     throw error;

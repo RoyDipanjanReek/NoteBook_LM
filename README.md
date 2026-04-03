@@ -12,7 +12,7 @@ Built with **Next.js**, **LangChain**, **Docker**, **OpenAI**, and **Clerk** —
 - 🤖 **Chat with Your Notes** — Contextual chat with OpenAI’s GPT models
 - 🔐 **Authentication with Clerk** — Secure user management and session handling
 - ⚡ **Next.js App Router** — Modern, fast, and scalable React-based framework
-- 🧠 **Vector Store Integration** — Store embeddings in Qdrant 
+- 🧠 **Vector Store Integration** — Store embeddings in MongoDB
 - 💾 **Persistent Conversations** — Save chat history and revisit your notes anytime
 - 🎨 **Modern UI** — Built with Tailwind CSS & Shadcn UI for a clean notebook feel
 
@@ -26,7 +26,7 @@ Built with **Next.js**, **LangChain**, **Docker**, **OpenAI**, and **Clerk** —
 | Backend      | [LangChain](https://www.langchain.com/), [Next.js API Routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes)     |
 | AI / LLM     | [OpenAI API](https://platform.openai.com/docs)                                                                                                |
 | Auth         | [Clerk](https://clerk.com/)                                                                                                                   |
-| Vector DB    | [QdrantDB](https://qdrant.tech/)                                                                                                              |
+| Vector DB    | [MongoDB](https://www.mongodb.com/)                                                                                                           |
 | File Parsing | [PDF-Parse](https://www.npmjs.com/package/pdf-parse), [PapaParse](https://www.papaparse.com/)                                                 |
 
 ---
@@ -47,7 +47,7 @@ notebooklm-clone/
 ├── lib/
 │ ├── langchain/ # LangChain pipelines and retrievers
 │ ├── embeddings.ts # OpenAI embeddings setup
-│ └── qdrant.ts # Vector DB integration
+│ └── mongodb.js # Vector DB integration
 │
 ├── public/ # Static assets
 ├── styles/ # Tailwind & global styles
@@ -67,8 +67,8 @@ CLERK_SECRET_KEY=your_clerk_secret
 
 OPENAI_API_KEY=your_openai_api_key
 
-QDRANT_URL=https://your-qdrant-instance
-QDRANT_API_KEY=your_qdrant_api_key
+MONGO_URI=your_mongodb_connection_string
+MONGO_DB_NAME=notebookLM
 
 ## 🛠️ Installation & Setup
 # 1️⃣ Clone the repository
@@ -96,7 +96,7 @@ Visit your app at 👉 http://localhost:3000
 
 3️⃣ Embeddings Creation: Each chunk is converted into vector embeddings using OpenAI
 
-4️⃣ Vector Storage: Embeddings are stored in a vector database (Qdrant)
+4️⃣ Vector Storage: Embeddings are stored in a vector database (MongoDB)
 
 6️⃣ Query: When user asks a question, relevant chunks are retrieved using similarity search
 
@@ -128,7 +128,7 @@ Clerk
 
 OpenAI
 
-Qdrant
+MongoDB
 
 Docker
 

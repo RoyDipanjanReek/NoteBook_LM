@@ -4,7 +4,7 @@ import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
-import { searchSimilarDocuments } from "./qdrant";
+import { searchSimilarDocuments } from "./mongodb";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 //  Supress token counting warnings
@@ -76,6 +76,8 @@ const ragPromptSyntex = PromptTemplate.fromTemplate(
     Question: {question}
 
     Answer
+    
+    Mentain the page number if you have also the ans. if you don't have that do not show anything. 
     `
 );
 

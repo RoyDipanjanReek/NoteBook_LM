@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { processFile, processText, processUrl } from "../../../lib/loaders.js";
-import { addDocuments, initializeVectorStore } from "../../../lib/qdrant.js";
+import { addDocuments, initializeVectorStore } from "../../../lib/mongodb.js";
 
 export async function POST(request) {
   try {

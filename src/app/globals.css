@@ -1,26 +1,60 @@
+@config "../../tailwind.config.js";
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-background: 245 241 232;
+  --color-surface: 251 248 242;
+  --color-surface-strong: 242 236 227;
+  --color-surface-inverse: 54 45 34;
+  --color-foreground: 45 42 38;
+  --color-muted: 111 104 95;
+  --color-muted-soft: 156 147 136;
+  --color-primary: 95 122 100;
+  --color-primary-strong: 72 96 77;
+  --color-primary-soft: 228 236 229;
+  --color-primary-contrast: 250 248 243;
+  --color-border: 221 212 197;
+  --color-success: 78 132 97;
+  --color-success-soft: 230 240 232;
+  --color-error: 179 91 74;
+  --color-error-soft: 248 232 228;
+  --bg: rgb(var(--color-background));
+  --surface: rgb(var(--color-surface));
+  --surface-strong: rgb(var(--color-surface-strong));
+  --text: rgb(var(--color-foreground));
+  --muted: rgb(var(--color-muted));
+  --border: rgb(var(--color-border));
+  --accent: rgb(var(--color-primary));
+  --accent-soft: rgb(var(--color-primary-soft));
+  --accent-strong: rgb(var(--color-primary-strong));
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    box-sizing: border-box;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-background bg-page-wash text-foreground font-sans antialiased;
+    margin: 0;
+  }
+
+  a {
+    @apply transition duration-200;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
 }
